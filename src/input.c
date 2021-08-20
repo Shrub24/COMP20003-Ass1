@@ -32,7 +32,7 @@ Watchtower **read_watchtowers(FILE *file, uint *size) {
             Watchtower **temp = (Watchtower**)realloc(watchtowers, sizeof(Watchtower*) * currSize * DYNAMIC_ARR_FACTOR);
             if (temp == 0) {
                 printf("Error allocating more memory to dynamic array");
-                return;
+                return NULL;
             }
             watchtowers = temp;
             currSize *= 2;
@@ -48,33 +48,42 @@ Watchtower **read_watchtowers(FILE *file, uint *size) {
     return watchtowers;
 }
 
-// Face *read_initial_polygon(FILE *file) {
-//     Face *face;
-//     face = (Face*)malloc(sizeof(Face));
+Face *read_initial_polygon(FILE *file) {
+    Face *face;
+    face = (Face*)malloc(sizeof(Face));
 
-//     int i = -1;
-//     uint currSize = DEFAULT_WATCHTOWER_SIZE;
-//     int read = 0;
-//     Edge *currEdge;
+    Edge *currEdge = NULL;
+    Edge *prevEdge = NULL;
 
-//     do {
-//         Vertex *curr = (Vertex *)malloc(sizeof(Vertex));
-//         int read = fscanf(file, "%f %f", curr->x, curr->y);
-//         if (currEdge == NULL) {
-//             face->edge = (Edge*)malloc(sizeof(Edge));
-//             currEdge = &face->edge;
-//             currEdge->prev = NULL; 
-//             currEdge->next = NULL;
-//             currEdge->twin = NULL;
-//         } else {
-//             currEdge->next = (Edge*)malloc(sizeof(Edge));
-//             currEdge->end = 
-//         }
-
-//         currEdge->face = face
-
-
-//         read = fscanf(file, WATCHTOWER_TEMPLATE, watchtowers[i]->watchtowerId, watchtowers[i]->postcode, &watchtowers[i]->popServed, watchtowers[i]->contact, &watchtowers[i]->x, &watchtowers[i]->y);
-//     } while(read == WATCHTOWER_LINE_SIZE);
+    float x, y;
     
-// }
+
+    while (fscanf(file, "%f %f\n", &x, &y) == 2) {
+        Vertex *currVertex = (Vertex *)malloc(sizeof(Vertex));
+        currVertex->x = x;
+        currVertex->y = y;
+        if (currEdge == NULL) {
+            currEdge = (Edge*)malloc(sizeof(Edge));
+            face->edge = currEdge;
+            currEdge->prev = NULL; 
+            currEdge->next = NULL;
+            currEdge->end = NULL;
+        } else {
+            prevEdge = currEdge;
+            currEdge = (Edge*)malloc(sizeof(Edge));
+            currEdge->prev = prevEdge;
+            prevEdge->next = currEdge;
+            prevEdge->end = currVertex; 
+        }
+
+        currEdge->twin = NULL;
+        currEdge->start = currVertex;
+        currEdge->face = face;
+    }
+
+    currEdge->next = face->edge;
+    face->edge->prev = currEdge->next;
+    currEdge->end = face->edge->start; 
+
+    return face;
+}

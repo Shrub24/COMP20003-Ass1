@@ -3,12 +3,13 @@
 
 #define POSTCODE_LENGTH 4
 #define WATCHTOWER_ID_LENGTH 11
+#define MAX_CONTACT_SIZE 128
 
 typedef struct {
     char watchtowerId[WATCHTOWER_ID_LENGTH + 1];
     char postcode[POSTCODE_LENGTH + 1];
     unsigned int popServed;
-    char contact[128];
+    char contact[MAX_CONTACT_SIZE + 1];
     float x;
     float y;
 
