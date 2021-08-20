@@ -10,15 +10,15 @@
 #include "input.h"
 
 #define DEFAULT_WATCHTOWER_SIZE 100
+#define WATCHTOWER_TEMPLATE " %[^,],%[^,],%u,%[^,],%f,%f\n"
 
-const char WATCHTOWER_TEMPLATE[] = "%[^,],%[^,],%u,%[^,],%f,%f";
 const int WATCHTOWER_LINE_SIZE = 6;
 const int DYNAMIC_ARR_FACTOR = 2;
 
-Watchtower **read_watchtowers(FILE *file, uint *size) {
+Watchtower **read_watchtowers(FILE *file, uint *size) {    
     // declare and initialise dynamic pointer array with default size
     Watchtower **watchtowers = (Watchtower**)malloc(sizeof(Watchtower*) * DEFAULT_WATCHTOWER_SIZE);
-    
+
     // skip header
     fscanf(file, "%*[^\n]\n");
 
@@ -29,7 +29,12 @@ Watchtower **read_watchtowers(FILE *file, uint *size) {
     do {
         i++;
         if ((uint)i == currSize - 1) {
-            watchtowers = (Watchtower**)malloc(sizeof(Watchtower*) * currSize * DYNAMIC_ARR_FACTOR);
+            Watchtower **temp = (Watchtower**)realloc(watchtowers, sizeof(Watchtower*) * currSize * DYNAMIC_ARR_FACTOR);
+            if (temp == 0) {
+                printf("Error allocating more memory to dynamic array");
+                return;
+            }
+            watchtowers = temp;
             currSize *= 2;
         }
         *(watchtowers+i) = (Watchtower*)malloc(sizeof(Watchtower));

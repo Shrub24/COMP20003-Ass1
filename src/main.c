@@ -10,7 +10,7 @@
 int main(int argc, char **argv)
 {
 
-	FILE *watchtowerFile = fopen(argv[0], "r");
+	FILE *watchtowerFile = fopen(argv[1], "r");
 
 
     u_int *watchtowerSize = NULL;
