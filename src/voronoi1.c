@@ -3,12 +3,14 @@
 #include "input.h"
 #include <stdlib.h>
 
-#define WATCHTOWER_FILE_ARGINDEX = 1;
-#define POLYGON_FILE_ARGINDEX = 2;
+#define WATCHTOWER_FILE_ARGINDEX 1;
+#define POLYGON_FILE_ARGINDEX 2;
 
 
 int main(int argc, char **argv)
 {
+
+    DCEL *dcel = initDCEL();
 
 	FILE *watchtowerFile = fopen(argv[1], "r");
 
@@ -18,6 +20,20 @@ int main(int argc, char **argv)
 	//init watchtowers array
     Watchtower** watchtowers = read_watchtowers(watchtowerFile, watchtowerSize);
     fclose(watchtowerFile);
+
+    FILE *polygonFile = fopen(argv[2], "r");
+
+
+    read_initial_polygon(polygonFile, dcel);
+    fclose(polygonFile);
+
+    // printf("%ld", edgeList->count);
+
+    FILE *splitFile = fopen(argv[3], "r");
+    read_splits(splitFile, dcel);
+    fclose(splitFile);
+
+
 
     // free dynamic array of watchtowers
 	for (size_t i = 0; i < *watchtowerSize; i++)
@@ -29,26 +45,8 @@ int main(int argc, char **argv)
 	free(watchtowers);
 
 
-    FILE *polygonFile = fopen(argv[2], "r");
-    u_int *edgeCount = 0;
-    Face *initialFace = malloc(sizeof(Face));
-    Edge **edges = read_initial_polygon(polygonFile, initialFace, edgeCount);
-    fclose(polygonFile);
-
     // free DCEL
-    Edge *currEdge = initialFace->edge;
-    Edge *temp = NULL;
-    do 
-    {
-        temp = currEdge;
-        currEdge = currEdge->next;
-        free(temp->start);
-        free(temp);
-    } while (currEdge != initialFace->edge);
-
-    free(initialFace);
-
-
+    freeDCEL(dcel);
     
 
 	return 1;
