@@ -7,7 +7,7 @@
 #define POLYGON_FILE_ARGINDEX = 2;
 
 
-int main(char **argv)
+int main(int argc, char **argv)
 {
 
 	FILE *watchtowerFile = fopen(argv[1], "r");
@@ -30,7 +30,9 @@ int main(char **argv)
 
 
     FILE *polygonFile = fopen(argv[2], "r");
-    Face *initialFace = read_initial_polygon(polygonFile);
+    u_int *edgeCount = 0;
+    Face *initialFace = malloc(sizeof(Face));
+    Edge **edges = read_initial_polygon(polygonFile, initialFace, edgeCount);
     fclose(polygonFile);
 
     // free DCEL

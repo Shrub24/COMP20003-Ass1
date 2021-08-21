@@ -10,8 +10,8 @@ typedef struct {
     char postcode[POSTCODE_LENGTH + 1];
     unsigned int popServed;
     char contact[MAX_CONTACT_SIZE + 1];
-    float x;
-    float y;
+    double x;
+    double y;
 
 } Watchtower;
 
@@ -25,14 +25,12 @@ typedef struct edge {
 } Edge;
 
 typedef struct vertex {
-    struct edge *edge;
-    float x;
-    float y;
+    double x;
+    double y;
 } Vertex;
 
 typedef struct face {
     struct edge *edge;
 } Face;
-
 
 #endif

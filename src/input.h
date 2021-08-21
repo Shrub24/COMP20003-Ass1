@@ -9,7 +9,7 @@
 
 Watchtower **read_watchtowers(FILE *file, uint *size);
 
-Face *read_initial_polygon(FILE *file);
+Edge **read_initial_polygon(FILE *file, Face *face, int *size);
 
 
 #endif
